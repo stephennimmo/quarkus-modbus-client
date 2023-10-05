@@ -1,5 +1,20 @@
 # quarkus-modbus-client
 
+Blog Post: https://stephennimmo.com/modbus-integration-at-the-edge-with-quarkus-native-image-compilation
+
+
+https://www.modbusdriver.com/modpoll.html
+
+https://www.modbusdriver.com/diagslave.html
+
+
+nohup ./diagslave -m tcp -p 5020 &
+
+./modpoll -m tcp -p 5020 -a 1 -r 1 -c 1 -1 127.0.0.1
+
+
+# Quarkus
+
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
