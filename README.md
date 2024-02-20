@@ -1,16 +1,69 @@
 # quarkus-modbus-client
 
-Blog Post: https://stephennimmo.com/modbus-integration-at-the-edge-with-quarkus-native-image-compilation
-
-
+https://stephennimmo.com/modbus-integration-at-the-edge-with-quarkus-native-image-compilation
+https://www.modbusdriver.com/diagslave.html
 https://www.modbusdriver.com/modpoll.html
 
-https://www.modbusdriver.com/diagslave.html
+# Build/Run modbus server
+```
+podman build -t quarkus/modbus-server .
+podman run -d --rm --name modbus-server --network modbus -p 5020:5020 quarkus/modbus-server
+```
+
+# Use Modpoll
+```
+podman exec -it modbus-server /bin/bash
+
+# Read
+/root/modpoll/x86_64-linux-gnu/modpoll -m tcp -p 5020 -a 1 -r 1 -c 1 -1 127.0.0.1
+
+# Write
+/root/modpoll/x86_64-linux-gnu/modpoll -m tcp -p 5020 -a 1 -r 1 -c 1 -1 127.0.0.1 4
+```
+
+# Run local and connect to modbus-server
+```
+./mvnw clean quarkus:dev
+```
+
+# Package and Run
+```
+./mvnw clean package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+podman build -f src/main/docker/Dockerfile.native-micro -t quarkus/quarkus-modbus-client .
+podman run -i --rm --network modbus -e MODBUS_HOST=modbus-server -e MODBUS_PORT=5020 quarkus/quarkus-modbus-client
+```
+
+----
+
+# Other Notes
+```
+curl https://www.modbusdriver.com/downloads/diagslave.tgz -o diagslave.tgz
+tar xzf diagslave.tgz
+curl https://www.modbusdriver.com/downloads/modpoll.tgz -o modpoll.tgz
+tar xzf modpoll.tgz
+```
+
+# Setup 
+```
+podman machine ssh 
+ip a
+```
+
+# Start 
+`nohup /root/diagslave/x86_64-linux-gnu/diagslave -m tcp -p 5020 &`
+
+# Read
+`/root/modpoll/x86_64-linux-gnu/modpoll -m tcp -p 5020 -a 1 -r 1 -c 1 -1 127.0.0.1`
+
+# Write
+`/root/modpoll/x86_64-linux-gnu/modpoll -m tcp -p 5020 -a 1 -r 1 -c 1 -1 127.0.0.1 4`
 
 
-nohup ./diagslave -m tcp -p 5020 &
 
-./modpoll -m tcp -p 5020 -a 1 -r 1 -c 1 -1 127.0.0.1
+
+```
+podman run --rm -it registry.access.redhat.com/ubi9/ubi /bin/bash
+```
 
 
 # Quarkus

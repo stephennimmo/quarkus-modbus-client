@@ -1,5 +1,6 @@
 package com.stephennimmo.modbus;
 
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import net.solarnetwork.io.modbus.ModbusClient;
@@ -18,6 +19,7 @@ public class ModbusClientProvider {
 
     @Produces
     ModbusClient modbusClient() {
+        Log.infof("Client Configuration: %s:%s", modbusHost, modbusPort);
         NettyTcpModbusClientConfig config = new NettyTcpModbusClientConfig(modbusHost, modbusPort);
         config.setAutoReconnect(true);
         config.setAutoReconnectDelaySeconds(5);
